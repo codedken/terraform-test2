@@ -1,0 +1,36 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Update the servers
+      apt:
+        update_cache: yes
+        upgrade: yes
+
+    - name: set timezone to africa/lagos
+      tags: time
+      timezone:
+        name: Africa/Lagos
+
+    - name: Install apache2
+      tags: apache,apache2
+      apt:
+        name:
+          - apache2
+        state: latest
+
+    - name: Remove the index file
+      file:
+        path: "var/www/html/index.html"
+        state: absent
+
+    - name: Create a new index file and populate with the servers public ip
+      shell:
+        cmd: echo "<h1>Welcome. This is the public address</h1><h2>(curl ifconfig.me)</h2>" > /var/www/html/index.html
+      notify: restart_apache
+
+  handlers:
+    - name: restart_apache
+      service:
+        name: apache2
+        state: restarted
