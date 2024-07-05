@@ -26,7 +26,7 @@
 
     - name: Create a new index file and populate with the servers public ip
       shell:
-        cmd: echo "<h1>Welcome. This is the public address</h1><h2>(curl ifconfig.me)</h2>" > /var/www/html/index.html
+        cmd: echo "<h1>Welcome. This is the public address</h1><h2>$(curl ifconfig.me)</h2>" > /var/www/html/index.html
       notify: restart_apache
 
   handlers:
